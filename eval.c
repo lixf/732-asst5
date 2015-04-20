@@ -3,7 +3,11 @@
 #include "eval.h"
 #include <assert.h>
 
+#define TAINTED 1 
+#define NOT_TAINTED 0
+
 int eval_debug = 0;
+
 
 void debug_eval(int val)
 {
@@ -92,6 +96,7 @@ value_t eval_exp(ast_t *e, varctx_t *tbl, memctx_t *mem)
 	        case READSECRETINT:
 	          printf("# ");
 	          scanf("%d", &ret);
+              newvar(e->info.varname, tbl, TAINTED);
 	          return ret;
 	          break;
 	        default:

@@ -4,7 +4,7 @@
 extern int eval_debug;
 
 
-varctx_t *newvar(char *name, varctx_t *o)
+varctx_t *newvar(char *name, varctx_t *o, int tainted)
 {
   varctx_t *n = (varctx_t *)malloc(sizeof(varctx_t));
   n->name = name;

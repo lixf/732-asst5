@@ -11,6 +11,7 @@ typedef struct varctx_t {
   char *name;
   value_t val;
   struct varctx_t *next;
+  int tainted;              /** this value is tainted */
 } varctx_t;
 
 typedef struct memctx_t {
