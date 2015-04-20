@@ -1,0 +1,10 @@
+w = get_int();
+mem[7] = get_secret_int();
+z = w + mem[7];
+if(0) {
+	mem[z] = 17;
+}
+else{
+	mem[z] = 6;
+}
+print(mem[11]);

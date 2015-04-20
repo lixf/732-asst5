@@ -1,0 +1,6 @@
+print(3);
+x = 3;
+y = 4;
+z = get_int();
+w = get_secret_int();
+print(z);

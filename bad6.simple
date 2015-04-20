@@ -1,0 +1,4 @@
+mem[7] = get_secret_int();
+w = get_int();
+assert(1==0);
+print(mem[7]*3 + w);

@@ -1,0 +1,13 @@
+print(3);
+x = 3;
+y = 4;
+z = get_int();
+w = get_secret_int();
+
+if( (7+3) == 10){
+  print("True");
+} else {
+  print("False");
+}
+// Should raise an error!
+print(w);
