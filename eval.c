@@ -139,6 +139,7 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
     while(ip != NULL) {
 	    s = ip->elem;
         ei.tainted = 0;
+        ei.ti = NULL;
 	    switch(s->info.node.tag){
 	        case ASSIGN:
                 /* the lhs */
@@ -182,10 +183,11 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
                             // from this expression.
                             fprintf(stderr, "Tainted variable: ");
                             print_tainted_items(&ei);
-	        	            fprintf(stderr, "\n<secret>\n");
+                            fprintf(stderr, "\n");
+	        	            fprintf(stdout, "<secret>\n");
                         } else {
                             fprintf(stderr, "Tainted variable: None\n");
-	        	            fprintf(stderr, "%u\n", v);
+	        	            fprintf(stdout, "%u\n", v);
                         }
 	        	        break;
 	            }

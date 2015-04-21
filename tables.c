@@ -13,6 +13,10 @@ extern int eval_debug;
 void print_tainted_items(exp_info *ei) {
     tainted_item *t;
     t = ei->ti;
+    if (t == NULL) {
+        fprintf(stderr, "Direct");
+    }
+
     while (t != NULL) {
         fprintf(stderr, "%s", t->name);
         if (t->next != NULL) {
@@ -26,6 +30,7 @@ void print_tainted_items(exp_info *ei) {
  * Add to tainted item list.
  */
 void add_tainted_var(exp_info *ei, varctx_t *c) {
+    // TODO Probably free this memory someday.
     if (ei->ti == NULL) {
         // This is the first tainted item
         ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
@@ -138,13 +143,12 @@ value_t load(unsigned int addr, memctx_t *c)
 {
   while(c != NULL){
     if(c->addr == addr){
-      if(eval_debug)
-	printf("[Debug][load]: %x value: %x\n", addr, c->val);
+	  dbg_printf("[Debug][load]: %x value: %x\n", addr, c->val);
       return c->val;
     }
     c = c->next;
   }
-  printf("[Debug][load]: %x <uninitialized. returning %x>\n", addr, DEFAULT_VAL);
+  dbg_printf("[Debug][load]: %x <uninitialized. returning %x>\n", addr, DEFAULT_VAL);
   return DEFAULT_VAL;
 }
 
