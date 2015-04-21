@@ -12,7 +12,7 @@
     static char curLine[512];
     static void DoBeforeEachAction();
 #define YY_USER_ACTION DoBeforeEachAction();
-    extern struct yyltype yylloc;
+//    extern struct yyltype yylloc;
 %}
 %option noyywrap
 %option stack
