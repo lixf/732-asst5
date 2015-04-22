@@ -222,14 +222,15 @@ varctx_t * update_var(char *name, value_t val, varctx_t *o, int tainted) {
     return n;
 }
 
-memctx_t *store(unsigned int addr, value_t val, memctx_t *o) {
+memctx_t *store(unsigned int addr, value_t val, memctx_t *o, int tainted) {
     memctx_t *n = NULL;
     memctx_t *c = o;
     while(c != NULL){
         if(c->addr == addr){
-            printf("[Debug][store] MEM[%x] with %x (replacing %x)\n", c->addr,
-                  val, c->val);
+            printf("[Debug][store] MEM[%x] with %x (replacing %x) tainted: %s\n", c->addr,
+                  val, c->val, (tainted ? "YES" : "NO"));
             c->val = val;
+            c->tainted = tainted;
             return o;
         }
         c = c->next;
@@ -239,16 +240,18 @@ memctx_t *store(unsigned int addr, value_t val, memctx_t *o) {
     n->addr = addr;
     n->val = val;
     n->next = o;
-    dbg_printf("[Debug][store] %x with %x (new node)\n", n->addr, val);
+    n->tainted = tainted;
+    dbg_printf("[Debug][store] %x with %x (new node) tainted: %s\n", n->addr, val, (tainted ? "YES" : "NO"));
     return n;
 }
 
-value_t load(unsigned int addr, memctx_t *c)
+value_t load(unsigned int addr, memctx_t *c, exp_info *ei)
 {
   print_memctx(c);
   while(c != NULL){
     if(c->addr == addr){
-	  dbg_printf("[Debug][load]: %x value: %x\n", addr, c->val);
+      ei->tainted |= c->tainted; 
+	  dbg_printf("[Debug][load]: %x value: %x tainted: %s\n", addr, c->val,(ei->tainted ? "YES" : "NO"));
       return c->val;
     }
     c = c->next;

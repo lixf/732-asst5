@@ -24,6 +24,7 @@ typedef struct memctx_t {
   unsigned int addr;
   value_t val;
   struct memctx_t *next;
+  int tainted; 
 } memctx_t; 
 
 typedef struct tainted_item {
@@ -53,10 +54,10 @@ varctx_t *update_var(char *name, value_t val, varctx_t *c, int tainted);
 
 /* updates our context c to bind value to address. Returns a new
    context with the updated binding (which may be different than c) */
-memctx_t *store(unsigned int addr, value_t val, memctx_t *c);
+memctx_t *store(unsigned int addr, value_t val, memctx_t *c, int tainted);
 
 /* load a value. Returns DEFAULT_VAL if there is no value for addr */
-value_t load(unsigned int addr, memctx_t *c);
+value_t load(unsigned int addr, memctx_t *c, exp_info *ei);
 
 /* prints out the memory context */
 void print_memctx(memctx_t *);

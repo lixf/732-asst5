@@ -31,8 +31,8 @@ value_t eval_exp(ast_t *e, varctx_t *tbl, memctx_t *mem, exp_info *ei, int is_me
 	        case MEM:
 	            dbg_printf("[Debug][eval_exp][MEM load]\n");
                 int addr = eval_exp(e->info.node.arguments->elem,tbl,mem,ei,IS_MEM);
-                ret = load(addr, mem);
-                check_tainted_list_mem(ei, addr);
+                ret = load(addr, mem, ei);
+                //check_tainted_list_mem(ei, addr);
 	            return ret;   
 	            break;
 	        case PLUS:
@@ -178,7 +178,7 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
 	                    dbg_printf("[Debug][ASSIGN][NODE AST] Address Tainted: %s\n", (ei_addr.tainted == TAINTED) ? "YES" : "NO");
 	                    dbg_printf("[Debug][ASSIGN][NODE AST] Content Tainted: %s\n", (ei.tainted == TAINTED) ? "YES" : "NO");
                         add_remove_tainted_mem(&ei, address);
-                        state->mem = store(address, v, state->mem);
+                        state->mem = store(address, v, state->mem, ei.tainted);
 	        	        break;
 	                default:
 	        	        assert(0);

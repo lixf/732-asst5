@@ -3,5 +3,5 @@ x = get_int();
 print(get_int());
 print(get_secret_int());
 print(get_int() + x);
-z = w - w
+z = w - w;
 print(z);
