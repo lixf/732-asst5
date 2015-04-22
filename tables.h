@@ -7,6 +7,12 @@ typedef int value_t;
 
 #define DEFAULT_VAL 0
 
+#define TAINTED 1 
+#define NOT_TAINTED 0
+#define IS_MEM 1
+#define NOT_MEM 0
+
+
 typedef struct varctx_t {
   char *name;
   value_t val;

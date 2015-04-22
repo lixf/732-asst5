@@ -3,11 +3,6 @@
 #include "eval.h"
 #include <assert.h>
 
-#define TAINTED 1 
-#define NOT_TAINTED 0
-#define IS_MEM 1
-#define NOT_MEM 0
-
 #define dbg_printf(...) \
     do { if (eval_debug) fprintf(stderr, __VA_ARGS__); } while (0)
 
@@ -35,7 +30,9 @@ value_t eval_exp(ast_t *e, varctx_t *tbl, memctx_t *mem, exp_info *ei, int is_me
         switch(e->info.node.tag){
 	        case MEM:
 	            dbg_printf("[Debug][eval_exp][MEM load]\n");
-                ret = load(eval_exp(e->info.node.arguments->elem,tbl,mem,ei, IS_MEM), mem);
+                int addr = eval_exp(e->info.node.arguments->elem,tbl,mem,ei,IS_MEM);
+                ret = load(addr, mem);
+                check_tainted_list_mem(ei, addr);
 	            return ret;   
 	            break;
 	        case PLUS:
@@ -154,6 +151,10 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
 	    s = ip->elem;
         ei.tainted = 0;
         ei.ti = NULL;
+        
+        ei_addr.tainted = 0;
+        ei_addr.ti = NULL;
+
 	    switch(s->info.node.tag){
             
 	        case ASSIGN:
@@ -173,9 +174,10 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
                         dbg_printf("[Debug] ASSIGNING to MEM[]\n");
 	                    dbg_printf("[Debug][ASSIGN][NODE AST]\n");
 	        	        assert(t1->info.node.tag == MEM);
-                        ei.tainted = 0;
 	        	        address = eval_exp(t1->info.node.arguments->elem, state->tbl, state->mem, &ei_addr, NOT_MEM); // FIXME FISHY
-	                    dbg_printf("[Debug][ASSIGN][NODE AST] Address Taine: %s\n", (ei_addr.tainted == TAINTED) ? "YES" : "NO");
+	                    dbg_printf("[Debug][ASSIGN][NODE AST] Address Tainted: %s\n", (ei_addr.tainted == TAINTED) ? "YES" : "NO");
+	                    dbg_printf("[Debug][ASSIGN][NODE AST] Content Tainted: %s\n", (ei.tainted == TAINTED) ? "YES" : "NO");
+                        add_remove_tainted_mem(&ei, address);
                         state->mem = store(address, v, state->mem);
 	        	        break;
 	                default:

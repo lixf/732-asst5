@@ -67,9 +67,94 @@ void add_tainted_var(exp_info *ei, varctx_t *c, int is_mem, int addr) {
 }
 
 /**
- * TODO
- */
-//void add_tainted_mem();
+ * Add/remove the memory content
+ **/
+void add_remove_tainted_mem(exp_info *ei, int addr) {
+
+    dbg_printf("[DEBUG][add_remove_tainted_mem] for mem[%d] %s\n", addr, (ei->tainted == TAINTED ? "ADD" : "REMOVE"));
+    if (ei->ti == NULL) {
+        if (ei->tainted == TAINTED) {
+            // This is the first tainted item
+            ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
+            dbg_printf("[DEBUG][add_remove_tainted_mem] for mem[%d] added at %p\n", addr, ei->ti);
+            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            ei->ti->next = NULL;
+        }
+    } else {
+        if (ei->tainted == TAINTED) {
+            tainted_item *t = ei->ti;
+            while (t->next != NULL) {
+                t = t->next;
+            }
+            t->next = (tainted_item *) malloc(sizeof(tainted_item));
+            dbg_printf("[DEBUG][add_remove_tainted_mem] for mem[%d] added at %p\n", addr, t->next);
+            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            t->next->next = NULL;
+        } else {
+            // remove the taint
+            tainted_item *t = ei->ti;
+            tainted_item *prev = NULL;
+            char *name = (char *)malloc(1024 * sizeof(char));
+            sprintf(name, "mem[%d]\n", addr);
+            while (t->next != NULL) {
+                if (strcmp(t->name, name) == 0) {
+                    // found a match, now remove it
+                    if (prev == NULL) {
+                        // beginning of the list
+                        ei->ti = t->next; 
+                    } else {
+                        prev->next = t->next; 
+                    }
+                    free(t);
+                }
+                prev = t;
+                t = t->next;
+            }
+            // check last element
+            if (strcmp(t->name, name) == 0) {
+                // found a match, now remove it
+                if (prev == NULL) {
+                    // beginning of the list
+                    ei->ti = t->next; 
+                } else {
+                    prev->next = t->next; 
+                }
+                free(t);
+            }
+        }
+    }
+}
+
+void check_tainted_list_mem(exp_info *ei, int addr) { 
+    dbg_printf("[DEBUG][check_tainted_mem] searching list for mem[%d]\n", addr);
+    if (ei->ti == NULL || ei->tainted == TAINTED) {
+        return; 
+    }
+    
+    tainted_item *t = ei->ti;
+    char *name = (char *)malloc(1024 * sizeof(char));
+    sprintf(name, "mem[%d]\n", addr);
+
+    while (t->next != NULL) {
+       if (strcmp(t->name, name) == 0) {
+            ei->tainted = TAINTED; 
+            dbg_printf("[DEBUG][check_tainted_mem] found it\n");
+            return;
+       }
+       t = t->next;
+    }
+    
+    if (strcmp(t->name, name) == 0) {
+         ei->tainted = TAINTED; 
+         dbg_printf("[DEBUG][check_tainted_mem] found it\n");
+         return;
+    }
+
+    dbg_printf("[DEBUG][check_tainted_mem] didn't find it\n");
+    return; 
+}
+
+
 
 /**
  * Add the NEWVAR to the end of the context.
