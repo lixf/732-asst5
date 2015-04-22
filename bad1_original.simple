@@ -1,0 +1,2 @@
+w = get_secret_int();
+print(w);

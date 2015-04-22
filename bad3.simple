@@ -1,0 +1,7 @@
+a = get_secret_int()
+b = get_int()
+c = a == b ? 1 : 0
+mem[0] = c + 5
+mem[1] = c - 5
+d = c + 10
+print(c + mem[0] + d + mem[1])

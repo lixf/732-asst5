@@ -1,7 +1,7 @@
 w = get_int();
 mem[7] = get_secret_int();
 z = w + mem[7];
-if(z == w) {
+if(0) {
 	mem[z] = 17;
 }
 else{

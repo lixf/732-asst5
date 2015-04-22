@@ -1,3 +1,7 @@
 w = get_secret_int();
 x = get_int();
-print(3*x + 7 - w);
+print(get_int());
+print(get_secret_int());
+print(get_int() + x);
+z = w - w
+print(z);

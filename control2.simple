@@ -1,0 +1,8 @@
+a = get_int();
+b = get_secret_int();
+if(a == 5) {
+  print ("try not five for secret value);
+}
+else {
+  print (b);
+}
