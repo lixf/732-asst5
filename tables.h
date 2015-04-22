@@ -11,7 +11,7 @@ typedef struct varctx_t {
   char *name;
   value_t val;
   struct varctx_t *next;
-  int tainted;              /** this value is tainted */
+  int tainted; 
 } varctx_t;
 
 typedef struct memctx_t {
@@ -39,7 +39,7 @@ varctx_t *newvar(char *name, varctx_t *o, int tainted);
 
 /* returns the value corresponding to a variable in a context. Returns
    DEFAULT_VAL if no such name exists */
-value_t lookup_var(char *name, varctx_t *c, exp_info *ei);
+value_t lookup_var(char *name, varctx_t *c, exp_info *ei, int is_mem);
 
 /* update a variable. returns a new context, which may be different
    than c */

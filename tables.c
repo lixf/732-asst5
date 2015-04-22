@@ -29,21 +29,40 @@ void print_tainted_items(exp_info *ei) {
 /**
  * Add to tainted item list.
  */
-void add_tainted_var(exp_info *ei, varctx_t *c) {
+void add_tainted_var(exp_info *ei, varctx_t *c, int is_mem, int addr) {
     // TODO Probably free this memory someday.
-    if (ei->ti == NULL) {
-        // This is the first tainted item
-        ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
-        strncpy(ei->ti->name, c->name, 1024);
-        ei->ti->next = NULL;
-    } else {
-        tainted_item *t = ei->ti;
-        while (t->next != NULL) {
-            t = t->next;
+    if (!is_mem) {
+        if (ei->ti == NULL) {
+            // This is the first tainted item
+            ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
+            strncpy(ei->ti->name, c->name, 1024);
+            ei->ti->next = NULL;
+        } else {
+            tainted_item *t = ei->ti;
+            while (t->next != NULL) {
+                t = t->next;
+            }
+            t->next = (tainted_item *) malloc(sizeof(tainted_item));
+            strncpy(t->next->name, c->name, 1024);
+            t->next->next = NULL;
         }
-        t->next = (tainted_item *) malloc(sizeof(tainted_item));
-        strncpy(t->next->name, c->name, 1024);
-        t->next->next = NULL;
+    } else {
+        if (ei->ti == NULL) {
+            // This is the first tainted item
+            ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
+            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            ei->ti->next = NULL;
+        } else {
+            // adding a tainted memory location to the list
+            tainted_item *t = ei->ti;
+            while (t->next != NULL) {
+                t = t->next;
+            }
+            t->next = (tainted_item *) malloc(sizeof(tainted_item));
+            sprintf(t->next->name,"mem[%d]\n", addr); 
+            t->next->next = NULL;
+        }
+
     }
 }
 
@@ -77,7 +96,7 @@ varctx_t *newvar(char *name, varctx_t *o, int tainted) {
     return n;
 }
 
-value_t lookup_var(char *name, varctx_t *c, exp_info *ei) {
+value_t lookup_var(char *name, varctx_t *c, exp_info *ei, int is_mem) {
     dbg_printf("[Debug][lookup_var] For name %s\n", name);
     while(c != NULL){
         if(strcmp(c->name, name) == 0) {
@@ -85,7 +104,7 @@ value_t lookup_var(char *name, varctx_t *c, exp_info *ei) {
                         c->val, c->tainted == 1 ? "YES" : "NO" );
             ei->tainted |= c->tainted;
             if (c->tainted == 1) {
-                add_tainted_var(ei, c);
+                add_tainted_var(ei, c, is_mem, c->val);
             }
             return c->val;
         }
@@ -123,7 +142,7 @@ memctx_t *store(unsigned int addr, value_t val, memctx_t *o) {
     memctx_t *c = o;
     while(c != NULL){
         if(c->addr == addr){
-            printf("[Debug][store] %x with %x (replacing %x)\n", c->addr,
+            printf("[Debug][store] MEM[%x] with %x (replacing %x)\n", c->addr,
                   val, c->val);
             c->val = val;
             return o;
@@ -141,6 +160,7 @@ memctx_t *store(unsigned int addr, value_t val, memctx_t *o) {
 
 value_t load(unsigned int addr, memctx_t *c)
 {
+  print_memctx(c);
   while(c != NULL){
     if(c->addr == addr){
 	  dbg_printf("[Debug][load]: %x value: %x\n", addr, c->val);
