@@ -49,7 +49,7 @@ void add_tainted_var(exp_info *ei, varctx_t *c, int is_mem, int addr) {
         if (ei->ti == NULL) {
             // This is the first tainted item
             ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
-            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            sprintf(ei->ti->name,"mem[%d]", addr); 
             ei->ti->next = NULL;
         } else {
             // adding a tainted memory location to the list
@@ -58,7 +58,7 @@ void add_tainted_var(exp_info *ei, varctx_t *c, int is_mem, int addr) {
                 t = t->next;
             }
             t->next = (tainted_item *) malloc(sizeof(tainted_item));
-            sprintf(t->next->name,"mem[%d]\n", addr); 
+            sprintf(t->next->name,"mem[%d]", addr); 
             t->next->next = NULL;
         }
 
@@ -226,7 +226,7 @@ memctx_t *store(unsigned int addr, value_t val, memctx_t *o, int tainted) {
     memctx_t *c = o;
     while(c != NULL){
         if(c->addr == addr){
-            printf("[Debug][store] MEM[%x] with %x (replacing %x) tainted: %s\n", c->addr,
+            dbg_printf("[Debug][store] MEM[%x] with %x (replacing %x) tainted: %s\n", c->addr,
                   val, c->val, (tainted ? "YES" : "NO"));
             c->val = val;
             c->tainted = tainted;
@@ -262,7 +262,7 @@ value_t load(unsigned int addr, memctx_t *c, exp_info *ei)
 void print_memctx(memctx_t *c)
 {
   while(c != NULL){
-    printf("[Debug] mem[%x] =  %x\n", c->addr, c->val);
+    dbg_printf("[Debug] mem[%x] =  %x\n", c->addr, c->val);
     c = c->next;
   }
 }

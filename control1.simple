@@ -1,6 +1,6 @@
 assert (b==b);
 a = get_secret_int();
-b = get_secret_int()
+b = get_secret_int();
 if(a == 0 ? b == 1 : 0) {
   print ("a is zero b is one");
 }

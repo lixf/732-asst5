@@ -189,7 +189,7 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
 	                case str_ast:
                         dbg_printf("[Debug][Print][str_ast]\n");
                         fprintf(stderr, "Tainted variable: None\n");
-	        	        fprintf(stderr, "%s\n", s->info.node.arguments->elem->info.string);
+	        	        fprintf(stdout, "%s\n", s->info.node.arguments->elem->info.string);
 	        	        break;
 	                default:
                         dbg_printf("[Debug][Print][default]\n");
@@ -206,7 +206,7 @@ state_t* eval_stmts(ast_t *p, state_t *state) {
 	        	            fprintf(stdout, "<secret>\n");
                         } else {
                             fprintf(stderr, "Tainted variable: None\n");
-	        	            fprintf(stdout, "%u\n", v);
+	        	            fprintf(stdout, "%d\n", v);
                         }
 	        	        break;
 	            }
