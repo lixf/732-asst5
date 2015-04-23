@@ -30,7 +30,6 @@ void print_tainted_items(exp_info *ei) {
  * Add to tainted item list.
  */
 void add_tainted_var(exp_info *ei, varctx_t *c, int is_mem, int addr) {
-    // TODO Probably free this memory someday.
     if (!is_mem) {
         if (ei->ti == NULL) {
             // This is the first tainted item
@@ -77,7 +76,7 @@ void add_remove_tainted_mem(exp_info *ei, int addr) {
             // This is the first tainted item
             ei->ti = (tainted_item *) malloc(sizeof(tainted_item));
             dbg_printf("[DEBUG][add_remove_tainted_mem] for mem[%d] added at %p\n", addr, ei->ti);
-            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            sprintf(ei->ti->name,"mem[%d]", addr); 
             ei->ti->next = NULL;
         }
     } else {
@@ -88,14 +87,14 @@ void add_remove_tainted_mem(exp_info *ei, int addr) {
             }
             t->next = (tainted_item *) malloc(sizeof(tainted_item));
             dbg_printf("[DEBUG][add_remove_tainted_mem] for mem[%d] added at %p\n", addr, t->next);
-            sprintf(ei->ti->name,"mem[%d]\n", addr); 
+            sprintf(t->next->name,"mem[%d]", addr); 
             t->next->next = NULL;
         } else {
             // remove the taint
             tainted_item *t = ei->ti;
             tainted_item *prev = NULL;
             char *name = (char *)malloc(1024 * sizeof(char));
-            sprintf(name, "mem[%d]\n", addr);
+            sprintf(name, "mem[%d]", addr);
             while (t->next != NULL) {
                 if (strcmp(t->name, name) == 0) {
                     // found a match, now remove it
@@ -247,7 +246,6 @@ memctx_t *store(unsigned int addr, value_t val, memctx_t *o, int tainted) {
 
 value_t load(unsigned int addr, memctx_t *c, exp_info *ei)
 {
-  print_memctx(c);
   while(c != NULL){
     if(c->addr == addr){
       ei->tainted |= c->tainted; 

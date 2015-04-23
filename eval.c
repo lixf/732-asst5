@@ -32,7 +32,7 @@ value_t eval_exp(ast_t *e, varctx_t *tbl, memctx_t *mem, exp_info *ei, int is_me
 	            dbg_printf("[Debug][eval_exp][MEM load]\n");
                 int addr = eval_exp(e->info.node.arguments->elem,tbl,mem,ei,IS_MEM);
                 ret = load(addr, mem, ei);
-                //check_tainted_list_mem(ei, addr);
+                add_remove_tainted_mem(ei, addr);
 	            return ret;   
 	            break;
 	        case PLUS:
