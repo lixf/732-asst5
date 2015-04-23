@@ -40,6 +40,8 @@ typedef struct exp_info {
 
 void print_tainted_items(exp_info *ei);
 
+void add_remove_tainted_mem(exp_info *ei, int addr);
+
 /* Extends the context o to include a new variable. The initial value
    is DEFAULT_VAL */
 varctx_t *newvar(char *name, varctx_t *o, int tainted);
