@@ -1,6 +1,7 @@
 make
 
 tests=( "bad1" "bad2" "bad3" "bad5" "bad6" \
+        "good1" "good2" "good3" \
         "control1" "control2" )
 
 for t in "${tests[@]}"
